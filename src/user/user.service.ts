@@ -10,9 +10,12 @@ import { UpdatePartialUserDTO } from "./dto/update-partial-user.dto";
 export class UserService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async create(data: CreateUserDTO) {
+    async create({ birthDate, ...rest }: CreateUserDTO) {
         return this.prisma.user.create({
-            data,
+            data: {
+                ...rest,
+                birthDate: birthDate ? new Date(birthDate) : null,
+            },
         });
     }
 
@@ -20,19 +23,21 @@ export class UserService {
         return this.prisma.user.findMany();
     }
 
-    async findOne(id: number) {
+    async ensureUserExists(id: string) {
+        if (!(await this.prisma.user.count({ where: { id } }))) {
+            throw new NotFoundException(`User with id: ${id} does not exist.`);
+        }
+    }
+
+    async findOne(id: string) {
+        await this.ensureUserExists(id);
+
         return this.prisma.user.findUnique({
             where: { id },
         });
     }
 
-    async ensureUserExists(id: number) {
-        if (!(await this.findOne(id))) {
-            throw new NotFoundException(`User with id: ${id} does not exist.`);
-        }
-    }
-
-    async update(id: number, { birthDate, ...rest }: UpdateUserDTO) {
+    async update(id: string, { birthDate, ...rest }: UpdateUserDTO) {
         await this.ensureUserExists(id);
 
         return this.prisma.user.update({
@@ -44,7 +49,7 @@ export class UserService {
         });
     }
 
-    async updatePartial(id: number, { birthDate, ...rest }: UpdatePartialUserDTO) {
+    async updatePartial(id: string, { birthDate, ...rest }: UpdatePartialUserDTO) {
         await this.ensureUserExists(id);
 
         return this.prisma.user.update({
@@ -56,7 +61,7 @@ export class UserService {
         });
     }
 
-    async delete(id: number) {
+    async delete(id: string) {
         await this.ensureUserExists(id);
 
         return this.prisma.user.delete({
