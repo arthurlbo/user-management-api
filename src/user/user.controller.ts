@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put } from "@nestjs/common";
 
 import { UserService } from "./user.service";
 
@@ -21,22 +21,22 @@ export class UserController {
     }
 
     @Get(":id")
-    async findOne(@Param("id", ParseIntPipe) id: number) {
+    async findOne(@Param("id", ParseUUIDPipe) id: string) {
         return this.userService.findOne(id);
     }
 
     @Put(":id")
-    async update(@Param("id", ParseIntPipe) id: number, @Body() data: UpdateUserDTO) {
+    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdateUserDTO) {
         return this.userService.update(id, data);
     }
 
     @Patch(":id")
-    async updatePartial(@Param("id", ParseIntPipe) id: number, @Body() data: UpdatePartialUserDTO) {
+    async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdatePartialUserDTO) {
         return this.userService.updatePartial(id, data);
     }
 
     @Delete(":id")
-    async delete(@Param("id", ParseIntPipe) id: number) {
+    async delete(@Param("id", ParseUUIDPipe) id: string) {
         return this.userService.delete(id);
     }
 }
