@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, UseGuards } from "@nestjs/common";
 
-import { Role } from "src/enums/role.enum";
+import { Role } from "@/enums/role.enum";
+import { AuthGuard } from "@/guards/auth.guard";
+import { RoleGuard } from "@/guards/role.guard";
+import { Roles } from "@/decorators/roles.decorator";
+
 import { UserService } from "./user.service";
-import { RoleGuard } from "src/guards/role.guard";
-import { AuthGuard } from "src/guards/auth.guard";
-import { Roles } from "src/decorators/roles.decorator";
 
 import { CreateUserDTO } from "./dto/create-user.dto";
 import { UpdateUserDTO } from "./dto/update-user.dto";

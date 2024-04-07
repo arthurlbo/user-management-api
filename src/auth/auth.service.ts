@@ -2,8 +2,8 @@ import { JwtService } from "@nestjs/jwt";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 
 import { User } from "@prisma/client";
-import { UserService } from "src/user/user.service";
-import { PrismaService } from "src/prisma/prisma.service";
+import { UserService } from "@/user/user.service";
+import { PrismaService } from "@/prisma/prisma.service";
 
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";

@@ -2,9 +2,10 @@ import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
 
 import { User as UserType } from "@prisma/client";
 
+import { AuthGuard } from "@/guards/auth.guard";
+import { User } from "@/decorators/user.decorator";
+
 import { AuthService } from "./auth.service";
-import { AuthGuard } from "src/guards/auth.guard";
-import { User } from "src/decorators/user.decorator";
 
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
