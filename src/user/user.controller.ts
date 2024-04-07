@@ -1,11 +1,17 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, UseGuards } from "@nestjs/common";
 
+import { Role } from "src/enums/role.enum";
 import { UserService } from "./user.service";
+import { RoleGuard } from "src/guards/role.guard";
+import { AuthGuard } from "src/guards/auth.guard";
+import { Roles } from "src/decorators/roles.decorator";
 
 import { CreateUserDTO } from "./dto/create-user.dto";
 import { UpdateUserDTO } from "./dto/update-user.dto";
 import { UpdatePartialUserDTO } from "./dto/update-partial-user.dto";
 
+@Roles(Role.Admin)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller("users")
 export class UserController {
     constructor(private readonly userService: UserService) {}
