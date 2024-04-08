@@ -1,9 +1,22 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    ParseUUIDPipe,
+    Patch,
+    Post,
+    Put,
+    UseGuards,
+    UseInterceptors,
+} from "@nestjs/common";
 
 import { Role } from "@/enums/role.enum";
 import { AuthGuard } from "@/guards/auth.guard";
 import { RoleGuard } from "@/guards/role.guard";
 import { Roles } from "@/decorators/roles.decorator";
+import { EmailInterceptor } from "@/interceptors/email.interceptor";
 
 import { UserService } from "./user.service";
 
@@ -18,6 +31,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Post()
+    @UseInterceptors(EmailInterceptor)
     async create(@Body() data: CreateUserDTO) {
         return this.userService.create(data);
     }
@@ -33,11 +47,13 @@ export class UserController {
     }
 
     @Put(":id")
+    @UseInterceptors(EmailInterceptor)
     async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdateUserDTO) {
         return this.userService.update(id, data);
     }
 
     @Patch(":id")
+    @UseInterceptors(EmailInterceptor)
     async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdatePartialUserDTO) {
         return this.userService.updatePartial(id, data);
     }

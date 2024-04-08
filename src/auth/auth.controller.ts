@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, UseInterceptors } from "@nestjs/common";
 
 import { User as UserType } from "@prisma/client";
 
-import { AuthGuard } from "@/guards/auth.guard";
 import { User } from "@/decorators/user.decorator";
+import { EmailInterceptor } from "@/interceptors/email.interceptor";
 
 import { AuthService } from "./auth.service";
 
@@ -16,7 +16,6 @@ import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @UseGuards(AuthGuard)
     @Post("me")
     async me(@User() user: UserType | string | Date) {
         delete user["password"];
@@ -30,6 +29,7 @@ export class AuthController {
     }
 
     @Post("register")
+    @UseInterceptors(EmailInterceptor)
     async register(@Body() data: AuthRegisterDTO) {
         return this.authService.register(data);
     }
