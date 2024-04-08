@@ -1,6 +1,8 @@
 import { JwtService } from "@nestjs/jwt";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 
+import * as bcrypt from "bcrypt";
+
 import { User } from "@prisma/client";
 import { UserService } from "@/user/user.service";
 import { PrismaService } from "@/prisma/prisma.service";
@@ -51,16 +53,6 @@ export class AuthService {
     }
 
     async register(data: AuthRegisterDTO) {
-        const userExists = await this.prisma.user.findFirst({
-            where: {
-                email: data.email,
-            },
-        });
-
-        if (userExists) {
-            throw new UnauthorizedException("User already exists.");
-        }
-
         const newUser = await this.userService.create(data);
 
         return this.generateToken(newUser);
@@ -70,11 +62,10 @@ export class AuthService {
         const user = await this.prisma.user.findFirst({
             where: {
                 email,
-                password,
             },
         });
 
-        if (!user) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new UnauthorizedException("Email or password is incorrect.");
         }
 
