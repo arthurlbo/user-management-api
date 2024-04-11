@@ -1,6 +1,7 @@
 import { JwtModule } from "@nestjs/jwt";
 import { forwardRef, Module } from "@nestjs/common";
 
+import { FileModule } from "@/file/file.module";
 import { UserModule } from "@/user/user.module";
 import { PrismaModule } from "@/prisma/prisma.module";
 
@@ -13,6 +14,7 @@ import { AuthController } from "./auth.controller";
             secret: process.env.JWT_SECRET,
         }),
         PrismaModule,
+        FileModule,
         forwardRef(() => UserModule),
     ],
     controllers: [AuthController],
