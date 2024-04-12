@@ -21,6 +21,7 @@
         "commit": "git-cz"
     },
     "dependencies": {
+        "@nestjs-modules/mailer": "^1.11.2",
         "@nestjs/common": "^10.3.7",
         "@nestjs/config": "^3.2.2",
         "@nestjs/core": "^10.3.7",
@@ -32,6 +33,8 @@
         "bcrypt": "^5.1.1",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
+        "nodemailer": "^6.9.13",
+        "pug": "^3.0.2",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.1"
     },
@@ -44,7 +47,9 @@
         "@types/bcrypt": "^5.0.2",
         "@types/express": "^4.17.21",
         "@types/jest": "^29.5.12",
+        "@types/multer": "^1.4.11",
         "@types/node": "^20.12.5",
+        "@types/nodemailer": "^6.4.14",
         "@types/supertest": "^6.0.2",
         "@typescript-eslint/eslint-plugin": "^7.5.0",
         "@typescript-eslint/parser": "^7.5.0",
