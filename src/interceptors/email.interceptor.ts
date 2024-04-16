@@ -14,6 +14,8 @@ export class EmailInterceptor implements NestInterceptor {
         const { user } = request;
         const { email } = request.body;
 
+        if (!email) return next.handle();
+
         const emailExists = (await this.prisma.user.count({ where: { email } })) > 0;
 
         const isUserEmail = user?.email === email;
