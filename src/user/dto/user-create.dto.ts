@@ -2,7 +2,7 @@ import { IsDateString, IsEmail, IsEnum, IsOptional, IsString, IsStrongPassword }
 
 import { Role } from "@/enums/role.enum";
 
-export class CreateUserDTO {
+export class UserCreateDTO {
     @IsString()
     name: string;
 

@@ -4,9 +4,9 @@ import * as bcrypt from "bcrypt";
 
 import { PrismaService } from "@/prisma/prisma.service";
 
-import { CreateUserDTO } from "./dto/create-user.dto";
-import { UpdateUserDTO } from "./dto/update-user.dto";
-import { UpdatePartialUserDTO } from "./dto/update-partial-user.dto";
+import { UserCreateDTO } from "./dto/user-create.dto";
+import { UserUpdateDTO } from "./dto/user-update.dto";
+import { UserUpdatePartialDTO } from "./dto/user-update-partial.dto";
 
 @Injectable()
 export class UserService {
@@ -18,7 +18,7 @@ export class UserService {
         }
     }
 
-    async create({ birthDate, password, ...rest }: CreateUserDTO) {
+    async create({ birthDate, password, ...rest }: UserCreateDTO) {
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
         return this.prisma.user.create({
@@ -42,7 +42,7 @@ export class UserService {
         });
     }
 
-    async update(id: string, { birthDate, password, ...rest }: UpdateUserDTO) {
+    async update(id: string, { birthDate, password, ...rest }: UserUpdateDTO) {
         await this.ensureUserExists(id);
 
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
@@ -57,7 +57,7 @@ export class UserService {
         });
     }
 
-    async updatePartial(id: string, { birthDate, password, ...rest }: UpdatePartialUserDTO) {
+    async updatePartial(id: string, { birthDate, password, ...rest }: UserUpdatePartialDTO) {
         await this.ensureUserExists(id);
 
         const handledPassword = password && (await bcrypt.hash(password, bcrypt.genSaltSync()));

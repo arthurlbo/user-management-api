@@ -20,9 +20,9 @@ import { EmailInterceptor } from "@/interceptors/email.interceptor";
 
 import { UserService } from "./user.service";
 
-import { CreateUserDTO } from "./dto/create-user.dto";
-import { UpdateUserDTO } from "./dto/update-user.dto";
-import { UpdatePartialUserDTO } from "./dto/update-partial-user.dto";
+import { UserCreateDTO } from "./dto/user-create.dto";
+import { UserUpdateDTO } from "./dto/user-update.dto";
+import { UserUpdatePartialDTO } from "./dto/user-update-partial.dto";
 
 @Roles(Role.Admin)
 @UseGuards(AuthGuard, RoleGuard)
@@ -32,7 +32,7 @@ export class UserController {
 
     @Post()
     @UseInterceptors(EmailInterceptor)
-    async create(@Body() data: CreateUserDTO) {
+    async create(@Body() data: UserCreateDTO) {
         return this.userService.create(data);
     }
 
@@ -48,13 +48,13 @@ export class UserController {
 
     @Put(":id")
     @UseInterceptors(EmailInterceptor)
-    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdateUserDTO) {
+    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UserUpdateDTO) {
         return this.userService.update(id, data);
     }
 
     @Patch(":id")
     @UseInterceptors(EmailInterceptor)
-    async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdatePartialUserDTO) {
+    async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: UserUpdatePartialDTO) {
         return this.userService.updatePartial(id, data);
     }
 
