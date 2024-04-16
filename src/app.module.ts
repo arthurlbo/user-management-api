@@ -34,7 +34,7 @@ import { AppController } from "./app.controller";
                 },
             },
             defaults: {
-                from: '"Arthur" <lobo@arthur.com>',
+                from: `"Arthur" ${process.env.MAIL_USER}`,
             },
             template: {
                 dir: join(process.cwd(), "src", "templates"),
