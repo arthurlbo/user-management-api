@@ -8,8 +8,12 @@ import {
     Controller,
     FileTypeValidator,
     MaxFileSizeValidator,
+    Param,
     ParseFilePipe,
+    ParseUUIDPipe,
+    Patch,
     Post,
+    Put,
     Req,
     UploadedFile,
     UseGuards,
@@ -26,8 +30,10 @@ import { EmailInterceptor } from "@/interceptors/email.interceptor";
 import { AuthService } from "./auth.service";
 
 import { AuthLoginDTO } from "./dto/auth-login.dto";
+import { AuthUpdateDTO } from "./dto/auth-update.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthResetPasswordDTO } from "./dto/auth-reset-password.dto";
+import { AuthUpdatePartialDTO } from "./dto/auth-update-partial.dto";
 import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
 
 const MAX_FILE_SIZE = 5_242_880; // 5MB
@@ -39,6 +45,17 @@ export class AuthController {
         private readonly authService: AuthService,
         private readonly fileService: FileService,
     ) {}
+
+    @Post("register")
+    @UseInterceptors(EmailInterceptor)
+    async register(@Body() data: AuthRegisterDTO) {
+        return this.authService.register(data);
+    }
+
+    @Post("login")
+    async login(@Body() data: AuthLoginDTO) {
+        return this.authService.login(data);
+    }
 
     @UseGuards(AuthGuard)
     @Post("me")
@@ -72,15 +89,18 @@ export class AuthController {
         return this.fileService.upload(req, avatar, path);
     }
 
-    @Post("login")
-    async login(@Body() data: AuthLoginDTO) {
-        return this.authService.login(data);
+    @Put(":id")
+    @UseGuards(AuthGuard)
+    @UseInterceptors(EmailInterceptor)
+    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: AuthUpdateDTO) {
+        return this.authService.update(id, data);
     }
 
-    @Post("register")
+    @Patch(":id")
+    @UseGuards(AuthGuard)
     @UseInterceptors(EmailInterceptor)
-    async register(@Body() data: AuthRegisterDTO) {
-        return this.authService.register(data);
+    async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: AuthUpdatePartialDTO) {
+        return this.authService.updatePartial(id, data);
     }
 
     @Post("forgot-password")

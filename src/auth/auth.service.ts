@@ -9,9 +9,11 @@ import { UserService } from "@/user/user.service";
 import { PrismaService } from "@/prisma/prisma.service";
 
 import { AuthLoginDTO } from "./dto/auth-login.dto";
+import { AuthUpdateDTO } from "./dto/auth-update.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
-import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
 import { AuthResetPasswordDTO } from "./dto/auth-reset-password.dto";
+import { AuthUpdatePartialDTO } from "./dto/auth-update-partial.dto";
+import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
 
 interface GenerateJWTConfig {
     expiresIn?: string;
@@ -88,6 +90,14 @@ export class AuthService {
         }
 
         return this.generateToken(user.id);
+    }
+
+    async update(id: string, data: AuthUpdateDTO) {
+        return this.userService.update(id, data);
+    }
+
+    async updatePartial(id: string, data: AuthUpdatePartialDTO) {
+        return this.userService.updatePartial(id, data);
     }
 
     async forgotPassword({ email }: AuthForgotPasswordDTO) {
