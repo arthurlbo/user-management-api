@@ -3,7 +3,7 @@ import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 
 import * as bcrypt from "bcrypt";
-import { User } from "@prisma/client";
+import { User as UserType } from "@prisma/client";
 
 import { UserService } from "@/user/user.service";
 import { PrismaService } from "@/prisma/prisma.service";
@@ -35,7 +35,7 @@ export class AuthService {
         private readonly mailerService: MailerService,
     ) {}
 
-    private async generateToken(id: User["id"], config: GenerateJWTConfig = {}) {
+    private async generateToken(id: UserType["id"], config: GenerateJWTConfig = {}) {
         const defaultConfig: GenerateJWTConfig = { expiresIn: "30 days", issuer: this.issuer, audience: this.audience };
 
         const { expiresIn, issuer, audience } = { ...defaultConfig, ...config };
@@ -55,7 +55,7 @@ export class AuthService {
         return { token };
     }
 
-    async verifyToken(token: string, config: VerifyJWTConfig = {}): Promise<{ id: User["id"] }> {
+    async verifyToken(token: string, config: VerifyJWTConfig = {}): Promise<{ id: UserType["id"] }> {
         const defaultConfig: VerifyJWTConfig = { issuer: this.issuer, audience: this.audience };
 
         const { issuer, audience } = { ...defaultConfig, ...config };
@@ -69,6 +69,14 @@ export class AuthService {
             return data;
         } catch (error) {
             throw new UnauthorizedException(error.message);
+        }
+    }
+
+    private async itIsUsersId(requestId: string, userId: string) {
+        if (requestId !== userId) {
+            throw new UnauthorizedException(
+                "You are trying to update a user that is not yourself. Please, make sure you are updating your own user.",
+            );
         }
     }
 
@@ -92,11 +100,15 @@ export class AuthService {
         return this.generateToken(user.id);
     }
 
-    async update(id: string, data: AuthUpdateDTO) {
+    async update(id: string, data: AuthUpdateDTO, user: UserType) {
+        await this.itIsUsersId(user.id, id);
+
         return this.userService.update(id, data);
     }
 
-    async updatePartial(id: string, data: AuthUpdatePartialDTO) {
+    async updatePartial(id: string, data: AuthUpdatePartialDTO, user: UserType) {
+        await this.itIsUsersId(user.id, id);
+
         return this.userService.updatePartial(id, data);
     }
 

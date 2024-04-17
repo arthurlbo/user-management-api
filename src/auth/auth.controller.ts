@@ -92,15 +92,19 @@ export class AuthController {
     @Put(":id")
     @UseGuards(AuthGuard)
     @UseInterceptors(EmailInterceptor)
-    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: AuthUpdateDTO) {
-        return this.authService.update(id, data);
+    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: AuthUpdateDTO, @User() user: UserType) {
+        return this.authService.update(id, data, user);
     }
 
     @Patch(":id")
     @UseGuards(AuthGuard)
     @UseInterceptors(EmailInterceptor)
-    async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: AuthUpdatePartialDTO) {
-        return this.authService.updatePartial(id, data);
+    async updatePartial(
+        @Param("id", ParseUUIDPipe) id: string,
+        @Body() data: AuthUpdatePartialDTO,
+        @User() user: UserType,
+    ) {
+        return this.authService.updatePartial(id, data, user);
     }
 
     @Post("forgot-password")
