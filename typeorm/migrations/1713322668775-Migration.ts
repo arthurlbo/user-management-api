@@ -31,7 +31,7 @@ export class Migration1713322668775 implements MigrationInterface {
                         length: "127",
                     },
                     {
-                        name: "birthAt",
+                        name: "birthDate",
                         type: "date",
                         isNullable: true,
                     },
