@@ -1,17 +1,19 @@
+import * as bcrypt from "bcrypt";
+import { Repository } from "typeorm";
 import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from "@nestjs/typeorm";
 import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 
-import * as bcrypt from "bcrypt";
-import { User } from "@prisma/client";
-
 import { UserService } from "@/user/user.service";
-import { PrismaService } from "@/prisma/prisma.service";
+import { UserEntity } from "@/user/entity/user.entity";
 
-import { AuthLoginDTO } from "./dto/auth-login.dto";
-import { AuthRegisterDTO } from "./dto/auth-register.dto";
-import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
-import { AuthResetPasswordDTO } from "./dto/auth-reset-password.dto";
+import { LoginAuthDTO } from "./dto/login-auth.dto";
+import { UpdateAuthDTO } from "./dto/update-auth.dto";
+import { RegisterAuthDTO } from "./dto/register-auth.dto";
+import { UpdatePartialAuthDTO } from "./dto/update-partial-auth.dto";
+import { ResetPasswordAuthDTO } from "./dto/reset-password-auth.dto";
+import { ForgotPasswordAuthDTO } from "./dto/forgot-password-auth.dto";
 
 interface GenerateJWTConfig {
     expiresIn?: string;
@@ -27,13 +29,14 @@ export class AuthService {
     private readonly issuer = "Authentication";
 
     constructor(
-        private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService,
         private readonly userService: UserService,
         private readonly mailerService: MailerService,
+        @InjectRepository(UserEntity)
+        private readonly usersRepository: Repository<UserEntity>,
     ) {}
 
-    private async generateToken(id: User["id"], config: GenerateJWTConfig = {}) {
+    private async generateToken(id: UserEntity["id"], config: GenerateJWTConfig = {}) {
         const defaultConfig: GenerateJWTConfig = { expiresIn: "30 days", issuer: this.issuer, audience: this.audience };
 
         const { expiresIn, issuer, audience } = { ...defaultConfig, ...config };
@@ -53,7 +56,7 @@ export class AuthService {
         return { token };
     }
 
-    async verifyToken(token: string, config: VerifyJWTConfig = {}): Promise<{ id: User["id"] }> {
+    async verifyToken(token: string, config: VerifyJWTConfig = {}): Promise<{ id: UserEntity["id"] }> {
         const defaultConfig: VerifyJWTConfig = { issuer: this.issuer, audience: this.audience };
 
         const { issuer, audience } = { ...defaultConfig, ...config };
@@ -70,17 +73,23 @@ export class AuthService {
         }
     }
 
-    async register(data: AuthRegisterDTO) {
+    private async itIsUsersId(requestId: string, userId: string) {
+        if (requestId !== userId) {
+            throw new UnauthorizedException(
+                "You are trying to update a user that is not yourself. Please, make sure you are updating your own user.",
+            );
+        }
+    }
+
+    async register(data: RegisterAuthDTO) {
         const newUser = await this.userService.create(data);
 
         return this.generateToken(newUser.id);
     }
 
-    async login({ email, password }: AuthLoginDTO) {
-        const user = await this.prismaService.user.findFirst({
-            where: {
-                email,
-            },
+    async login({ email, password }: LoginAuthDTO) {
+        const user = await this.usersRepository.findOneBy({
+            email,
         });
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -90,11 +99,21 @@ export class AuthService {
         return this.generateToken(user.id);
     }
 
-    async forgotPassword({ email }: AuthForgotPasswordDTO) {
-        const user = await this.prismaService.user.findFirst({
-            where: {
-                email,
-            },
+    async update(id: string, { birthDate, password, ...rest }: UpdateAuthDTO, user: UserEntity) {
+        await this.itIsUsersId(id, user.id);
+
+        return this.userService.update(id, { ...rest, birthDate, password });
+    }
+
+    async updatePartial(id: string, { birthDate, password, ...rest }: UpdatePartialAuthDTO, user: UserEntity) {
+        await this.itIsUsersId(id, user.id);
+
+        return this.userService.updatePartial(id, { ...rest, birthDate, password });
+    }
+
+    async forgotPassword({ email }: ForgotPasswordAuthDTO) {
+        const user = await this.usersRepository.findOneBy({
+            email,
         });
 
         if (!user) {
@@ -119,20 +138,17 @@ export class AuthService {
         return true;
     }
 
-    async resetPassword({ password, token }: AuthResetPasswordDTO) {
+    async resetPassword({ password, token }: ResetPasswordAuthDTO) {
         try {
             const { id } = await this.verifyToken(token, { issuer: "Forgot Password" });
 
             const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
-            const user = await this.prismaService.user.update({
-                where: {
-                    id,
-                },
-                data: {
-                    password: hashedPassword,
-                },
+            await this.usersRepository.update(id, {
+                password: hashedPassword,
             });
+
+            const user = await this.userService.findOne(id);
 
             return this.generateToken(user.id);
         } catch (error) {

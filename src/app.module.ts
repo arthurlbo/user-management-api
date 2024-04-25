@@ -3,12 +3,14 @@ import { join } from "path";
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { PugAdapter } from "@nestjs-modules/mailer/dist/adapters/pug.adapter";
 
 import { AuthModule } from "@/auth/auth.module";
 import { UserModule } from "@/user/user.module";
+import { UserEntity } from "@/user/entity/user.entity";
 
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
@@ -34,7 +36,7 @@ import { AppController } from "./app.controller";
                 },
             },
             defaults: {
-                from: '"Arthur" <lobo@arthur.com>',
+                from: `"Arthur" ${process.env.MAIL_USER}`,
             },
             template: {
                 dir: join(process.cwd(), "src", "templates"),
@@ -43,6 +45,16 @@ import { AppController } from "./app.controller";
                     strict: true,
                 },
             },
+        }),
+        TypeOrmModule.forRoot({
+            type: "mysql",
+            host: process.env.DB_HOST,
+            port: +process.env.DB_PORT,
+            username: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_NAME,
+            entities: [UserEntity],
+            synchronize: process.env.NODE_ENV === "development",
         }),
     ],
     controllers: [AppController],

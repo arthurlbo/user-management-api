@@ -8,27 +8,32 @@ import {
     Controller,
     FileTypeValidator,
     MaxFileSizeValidator,
+    Param,
     ParseFilePipe,
+    ParseUUIDPipe,
+    Patch,
     Post,
+    Put,
     Req,
     UploadedFile,
     UseGuards,
     UseInterceptors,
 } from "@nestjs/common";
 
-import { User as UserType } from "@prisma/client";
-
 import { AuthGuard } from "@/guards/auth.guard";
 import { FileService } from "@/file/file.service";
 import { User } from "@/decorators/user.decorator";
+import { UserEntity } from "@/user/entity/user.entity";
 import { EmailInterceptor } from "@/interceptors/email.interceptor";
 
 import { AuthService } from "./auth.service";
 
-import { AuthLoginDTO } from "./dto/auth-login.dto";
-import { AuthRegisterDTO } from "./dto/auth-register.dto";
-import { AuthResetPasswordDTO } from "./dto/auth-reset-password.dto";
-import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
+import { LoginAuthDTO } from "./dto/login-auth.dto";
+import { UpdateAuthDTO } from "./dto/update-auth.dto";
+import { RegisterAuthDTO } from "./dto/register-auth.dto";
+import { UpdatePartialAuthDTO } from "./dto/update-partial-auth.dto";
+import { ResetPasswordAuthDTO } from "./dto/reset-password-auth.dto";
+import { ForgotPasswordAuthDTO } from "./dto/forgot-password-auth.dto";
 
 const MAX_FILE_SIZE = 5_242_880; // 5MB
 const FILE_TYPE = /image\/(jpeg|jpg|png|webp|svg)$/;
@@ -40,9 +45,20 @@ export class AuthController {
         private readonly fileService: FileService,
     ) {}
 
+    @Post("register")
+    @UseInterceptors(EmailInterceptor)
+    async register(@Body() data: RegisterAuthDTO) {
+        return this.authService.register(data);
+    }
+
+    @Post("login")
+    async login(@Body() data: LoginAuthDTO) {
+        return this.authService.login(data);
+    }
+
     @UseGuards(AuthGuard)
     @Post("me")
-    async me(@User() user: UserType) {
+    async me(@User() user: UserEntity) {
         delete user["password"];
 
         return { data: user };
@@ -52,7 +68,7 @@ export class AuthController {
     @UseGuards(AuthGuard)
     @Post("avatar")
     async uploadAvatar(
-        @User() user: UserType,
+        @User() user: UserEntity,
         @Req() req: Request,
         @UploadedFile(
             new ParseFilePipe({
@@ -72,24 +88,31 @@ export class AuthController {
         return this.fileService.upload(req, avatar, path);
     }
 
-    @Post("login")
-    async login(@Body() data: AuthLoginDTO) {
-        return this.authService.login(data);
+    @Put(":id")
+    @UseGuards(AuthGuard)
+    @UseInterceptors(EmailInterceptor)
+    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdateAuthDTO, @User() user: UserEntity) {
+        return this.authService.update(id, data, user);
     }
 
-    @Post("register")
+    @Patch(":id")
+    @UseGuards(AuthGuard)
     @UseInterceptors(EmailInterceptor)
-    async register(@Body() data: AuthRegisterDTO) {
-        return this.authService.register(data);
+    async updatePartial(
+        @Param("id", ParseUUIDPipe) id: string,
+        @Body() data: UpdatePartialAuthDTO,
+        @User() user: UserEntity,
+    ) {
+        return this.authService.updatePartial(id, data, user);
     }
 
     @Post("forgot-password")
-    async forgotPassword(@Body() data: AuthForgotPasswordDTO) {
+    async forgotPassword(@Body() data: ForgotPasswordAuthDTO) {
         return this.authService.forgotPassword(data);
     }
 
     @Post("reset-password")
-    async resetPassword(@Body() data: AuthResetPasswordDTO) {
+    async resetPassword(@Body() data: ResetPasswordAuthDTO) {
         return this.authService.resetPassword(data);
     }
 }

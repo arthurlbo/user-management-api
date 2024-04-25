@@ -1,12 +1,16 @@
+import { Observable } from "rxjs";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 import { CallHandler, ConflictException, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
 
-import { Observable } from "rxjs";
-
-import { PrismaService } from "@/prisma/prisma.service";
+import { UserEntity } from "@/user/entity/user.entity";
 
 @Injectable()
 export class EmailInterceptor implements NestInterceptor {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly usersRepository: Repository<UserEntity>,
+    ) {}
 
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
         const request = context.switchToHttp().getRequest();
@@ -14,7 +18,9 @@ export class EmailInterceptor implements NestInterceptor {
         const { user } = request;
         const { email } = request.body;
 
-        const emailExists = (await this.prisma.user.count({ where: { email } })) > 0;
+        if (!email) return next.handle();
+
+        const emailExists = await this.usersRepository.exists({ where: { email } });
 
         const isUserEmail = user?.email === email;
 
