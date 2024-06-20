@@ -6,5 +6,5 @@ export const createUserMock: UserCreateDTO = {
     name: "Marvin Doe",
     email: "marvin@email.com",
     password: "$2b$10$gwOs3fRIwbHfcpzw7HfiZePfGG4e0zePamDdOAn6ucCXVrEkydBbC",
-    role: Role.User,
+    roleId: Role.User,
 };

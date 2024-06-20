@@ -4,6 +4,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { AuthController } from "@/auth/auth.controller";
 
 import { AuthGuard } from "@/guards/auth.guard";
+import { RoleInterceptor } from "@/interceptors/role.interceptor";
 import { EmailInterceptor } from "@/interceptors/email.interceptor";
 
 import { fileMock } from "@/test/__mocks__/file.mock";
@@ -55,8 +56,9 @@ describe("AuthController", () => {
         it("should apply the interceptors", () => {
             const interceptors = reflector.get("__interceptors__", authController.register);
 
-            expect(interceptors.length).toBe(1);
-            expect(new interceptors[0]()).toBeInstanceOf(EmailInterceptor);
+            expect(interceptors.length).toBe(2);
+            expect(new interceptors[0]()).toBeInstanceOf(RoleInterceptor);
+            expect(new interceptors[1]()).toBeInstanceOf(EmailInterceptor);
         });
     });
 
@@ -92,15 +94,16 @@ describe("AuthController", () => {
             expect(result).toEqual(userListMock[0]);
         });
 
-        it("should apply the interceptors and guards in PUT method", () => {
-            const interceptors = reflector.get("__interceptors__", authController.update);
+        it("should apply the guards and interceptors in PUT method", () => {
             const guards = reflector.get("__guards__", authController.update);
-
-            expect(interceptors.length).toBe(1);
-            expect(new interceptors[0]()).toBeInstanceOf(EmailInterceptor);
+            const interceptors = reflector.get("__interceptors__", authController.update);
 
             expect(guards.length).toBe(1);
             expect(new guards[0]()).toBeInstanceOf(AuthGuard);
+
+            expect(interceptors.length).toBe(2);
+            expect(new interceptors[0]()).toBeInstanceOf(RoleInterceptor);
+            expect(new interceptors[1]()).toBeInstanceOf(EmailInterceptor);
         });
 
         it("should update a user partially when using the PATCH method", async () => {
@@ -109,15 +112,16 @@ describe("AuthController", () => {
             expect(result).toEqual(userListMock[0]);
         });
 
-        it("should apply the interceptors and guards in PATCH method", () => {
-            const interceptors = reflector.get("__interceptors__", authController.updatePartial);
+        it("should apply the guards and interceptors in PATCH method", () => {
             const guards = reflector.get("__guards__", authController.updatePartial);
-
-            expect(interceptors.length).toBe(1);
-            expect(new interceptors[0]()).toBeInstanceOf(EmailInterceptor);
+            const interceptors = reflector.get("__interceptors__", authController.updatePartial);
 
             expect(guards.length).toBe(1);
             expect(new guards[0]()).toBeInstanceOf(AuthGuard);
+
+            expect(interceptors.length).toBe(2);
+            expect(new interceptors[0]()).toBeInstanceOf(RoleInterceptor);
+            expect(new interceptors[1]()).toBeInstanceOf(EmailInterceptor);
         });
     });
 

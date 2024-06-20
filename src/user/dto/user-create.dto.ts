@@ -15,7 +15,7 @@ export class UserCreateDTO {
 
     @IsOptional()
     @IsEnum(Role)
-    role?: Role;
+    roleId?: Role;
 
     @IsStrongPassword({
         minLength: 6,

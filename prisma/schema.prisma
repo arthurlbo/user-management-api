@@ -12,10 +12,23 @@ model User {
   name      String    @db.VarChar(63)
   email     String    @db.VarChar(127)
   password  String    @db.VarChar(127)
-  role      String    @default("user")
+  createdAt DateTime? @default(now()) @db.Timestamp(0) @map(name: "created_at")
+  updatedAt DateTime? @default(now()) @db.Timestamp(0) @map(name: "updated_at")
   birthDate DateTime? @db.Date
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+ 
+  role      Role      @relation(fields: [roleId], references: [id])
+  roleId    Int       @default(2) @map(name: "role_id")
 
   @@map("users")
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  name String @unique @db.VarChar(63)
+  createdAt DateTime? @default(now()) @db.Timestamp(0) @map(name: "created_at")
+  updatedAt DateTime? @default(now()) @db.Timestamp(0) @map(name: "updated_at")
+
+  users User[]
+
+  @@map("roles")
 }

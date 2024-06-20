@@ -1,6 +1,8 @@
 import { Reflector } from "@nestjs/core";
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 
+import { User as UserType } from "@prisma/client";
+
 import { Role } from "@/enums/role.enum";
 import { ROLES_KEY } from "@/decorators/roles.decorator";
 
@@ -18,9 +20,9 @@ export class RoleGuard implements CanActivate {
             return true;
         }
 
-        const { user } = context.switchToHttp().getRequest();
+        const { user }: { user: UserType } = context.switchToHttp().getRequest();
 
-        const hasRole = requiredRoles.some((role) => role === user.role);
+        const hasRole = requiredRoles.some((role) => role === user.roleId);
 
         if (!hasRole) {
             throw new ForbiddenException("You don't have permission to access this resource.");

@@ -26,6 +26,7 @@ import { User as UserType } from "@prisma/client";
 import { AuthGuard } from "@/guards/auth.guard";
 import { FileService } from "@/file/file.service";
 import { User } from "@/decorators/user.decorator";
+import { RoleInterceptor } from "@/interceptors/role.interceptor";
 import { EmailInterceptor } from "@/interceptors/email.interceptor";
 
 import { AuthService } from "./auth.service";
@@ -51,6 +52,7 @@ export class AuthController {
 
     @Post("register")
     @UseInterceptors(EmailInterceptor)
+    @UseInterceptors(RoleInterceptor)
     async register(@Body() data: AuthRegisterDTO): Promise<Token> {
         return this.authService.register(data);
     }
@@ -95,6 +97,7 @@ export class AuthController {
     @Put(":id")
     @UseGuards(AuthGuard)
     @UseInterceptors(EmailInterceptor)
+    @UseInterceptors(RoleInterceptor)
     async update(
         @Param("id", ParseUUIDPipe) id: string,
         @Body() data: AuthUpdateDTO,
@@ -106,6 +109,7 @@ export class AuthController {
     @Patch(":id")
     @UseGuards(AuthGuard)
     @UseInterceptors(EmailInterceptor)
+    @UseInterceptors(RoleInterceptor)
     async updatePartial(
         @Param("id", ParseUUIDPipe) id: string,
         @Body() data: AuthUpdatePartialDTO,

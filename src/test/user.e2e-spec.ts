@@ -49,7 +49,7 @@ describe("UserController", () => {
         const { body, status } = response;
 
         expect(status).toBe(200);
-        expect(body.role).toBe(Role.User);
+        expect(body.roleId).toBe(Role.User);
 
         loggedUser = body;
     });
@@ -75,10 +75,10 @@ describe("UserController", () => {
         // Update the user's role
         const updatedUser = await prismaService.user.update({
             where: { id: loggedUser.id },
-            data: { role: Role.Admin },
+            data: { roleId: Role.Admin },
         });
 
-        expect(updatedUser.role).toEqual(Role.Admin);
+        expect(updatedUser.roleId).toEqual(Role.Admin);
     });
 
     it("should create a new user", async () => {

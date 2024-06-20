@@ -17,13 +17,14 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "pretest:e2e": "dotenv -e .env.test -- pnpm clear:db && dotenv -e .env.test -- pnpm migrate:up",
+        "pretest:e2e": "dotenv -e .env.test -- pnpm clear:db && dotenv -e .env.test -- pnpm migrate:up && dotenv -e .env.test -- pnpm seed",
         "test:e2e": "dotenv -e .env.test -- jest --config ./src/test/jest-e2e.json",
         "posttest:e2e": "dotenv -e .env.test -- pnpm clear:db",
         "prepare": "husky install",
         "commit": "git-cz",
         "migrate:up": "pnpm prisma migrate deploy",
-        "clear:db": "pnpm prisma migrate reset --force"
+        "clear:db": "pnpm prisma migrate reset --force",
+        "seed": "ts-node prisma/seed.ts"
     },
     "dependencies": {
         "@nestjs-modules/mailer": "^2.0.2",

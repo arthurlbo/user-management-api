@@ -6,6 +6,7 @@ import * as request from "supertest";
 import { User } from "@prisma/client";
 
 import { AppModule } from "@/app.module";
+import { Role } from "@/enums/role.enum";
 
 import { updateUserMock } from "./__mocks__/update-user.mock";
 import { authRegisterMock } from "./__mocks__/auth-register.mock";
@@ -42,6 +43,14 @@ describe("AuthController", () => {
         expect(response.status).toBe(409);
     });
 
+    it("should not register a new user trying to register as admin", async () => {
+        const response = await request(app.getHttpServer())
+            .post("/auth/register")
+            .send({ ...authRegisterMock, roleId: Role.Admin });
+
+        expect(response.status).toBe(401);
+    });
+
     it("should login a user", async () => {
         const response = await request(app.getHttpServer()).post("/auth/login").send(authRegisterMock);
 
@@ -61,7 +70,7 @@ describe("AuthController", () => {
         const { body, status } = response;
 
         expect(status).toBe(200);
-        expect(body.role).toBe("user");
+        expect(body.roleId).toBe(Role.User);
         expect(body).not.toHaveProperty("password");
 
         loggedUser = body;
