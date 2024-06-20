@@ -9,5 +9,7 @@
     "roots": ["<rootDir>/src/test"],
     "moduleNameMapper": {
         "^@/(.*)$": "<rootDir>/src/$1"
-    }
+    },
+    "globalSetup": "<rootDir>/src/test/setup-e2e.ts",
+    "globalTeardown": "<rootDir>/src/test/teardown-e2e.ts"
 }
