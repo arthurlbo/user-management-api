@@ -31,7 +31,7 @@
         "dev-p-mg-reset": "pnpm dev-env -- pnpm p-mg-reset",
         "test-p-mg-reset": "pnpm test-env -- pnpm p-mg-reset",
         "prod-p-seed": "pnpm prod-env -- pnpm p-seed",
-        "dev-seed": "pnpm dev-env -- pnpm p-seed",
+        "dev-p-seed": "pnpm dev-env -- pnpm p-seed",
         "test-p-seed": "pnpm test-env -- pnpm p-seed",
         "prod-mg": "pnpm prod-env -- prisma migrate deploy",
         "prepare": "husky install",
