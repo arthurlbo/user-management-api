@@ -1,23 +1,34 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import { PrismaClient } from "@prisma/client";
 
-import { Role } from "../src/enums/role.enum";
+let Role;
+
+if (process.env.NODE_ENV === "production") {
+    Role = require("../dist/src/enums/role.enum").Role;
+} else {
+    Role = require("../src/enums/role.enum").Role;
+}
 
 const prisma = new PrismaClient();
 
 const doSeed = async () => {
-    // Create initial roles
-    await prisma.role.createMany({
-        data: [
-            {
-                id: Role.Admin,
-                name: "admin",
-            },
-            {
-                id: Role.User,
-                name: "user",
-            },
-        ],
-    });
+    const roles = await prisma.role.findMany();
+
+    if (roles.length === 0) {
+        await prisma.role.createMany({
+            data: [
+                {
+                    id: Role.Admin,
+                    name: "admin",
+                },
+                {
+                    id: Role.User,
+                    name: "user",
+                },
+            ],
+        });
+    }
 };
 
 doSeed()

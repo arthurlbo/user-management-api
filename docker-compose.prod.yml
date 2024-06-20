@@ -1,0 +1,9 @@
+services:
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-management
+    restart: always
+    ports:
+      - "3000:3000"
