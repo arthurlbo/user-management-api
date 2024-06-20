@@ -7,6 +7,7 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { PugAdapter } from "@nestjs-modules/mailer/dist/adapters/pug.adapter";
 
+import { EnvModule } from "@/env/env.module";
 import { AuthModule } from "@/auth/auth.module";
 import { UserModule } from "@/user/user.module";
 
@@ -15,9 +16,13 @@ import { AppController } from "./app.controller";
 
 @Module({
     imports: [
+        EnvModule,
         AuthModule,
         UserModule,
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: `.env.${process.env.NODE_ENV ?? "development"}`,
+        }),
         ThrottlerModule.forRoot([
             {
                 ttl: 60 * 1000,
