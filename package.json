@@ -8,7 +8,7 @@
     "scripts": {
         "prebuild": "pnpm format && pnpm eslint && pnpm test && pnpm test:e2e test/user.e2e-spec.ts && pnpm test:e2e test/auth.e2e-spec.ts",
         "build": "nest build",
-        "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+        "format": "prettier --write \"src/**/*.ts\"",
         "dev": "nest start --watch",
         "debug": "nest start --debug --watch",
         "prod": "node dist/main",

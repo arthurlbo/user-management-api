@@ -15,7 +15,7 @@ export class SystemService {
                 unlinkSync(filePath);
                 return true;
             }
-            
+
             return false;
         });
     }
@@ -23,7 +23,7 @@ export class SystemService {
     public createFile(path: string, file: Express.Multer.File): Promise<void> {
         return new Promise((resolve, reject) => {
             const readStream = new PassThrough();
-            
+
             readStream.write(file.buffer);
             readStream.end();
 
