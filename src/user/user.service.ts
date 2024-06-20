@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 
 import * as bcrypt from "bcrypt";
+import { User as UserType } from "@prisma/client";
 
 import { PrismaService } from "@/prisma/prisma.service";
 
@@ -12,13 +13,13 @@ import { UserUpdatePartialDTO } from "./dto/user-update-partial.dto";
 export class UserService {
     constructor(private readonly prisma: PrismaService) {}
 
-    private async ensureUserExistsById(id: string) {
+    private async ensureUserExistsById(id: string): Promise<void> {
         if (!(await this.prisma.user.count({ where: { id } }))) {
             throw new NotFoundException(`User with id: ${id} does not exist.`);
         }
     }
 
-    public async create({ birthDate, password, ...rest }: UserCreateDTO) {
+    public async create({ birthDate, password, ...rest }: UserCreateDTO): Promise<UserType> {
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
         return this.prisma.user.create({
@@ -30,11 +31,11 @@ export class UserService {
         });
     }
 
-    public async findAll() {
+    public async findAll(): Promise<UserType[]> {
         return this.prisma.user.findMany();
     }
 
-    public async findOne(id: string) {
+    public async findOne(id: string): Promise<UserType> {
         await this.ensureUserExistsById(id);
 
         return this.prisma.user.findUnique({
@@ -42,7 +43,7 @@ export class UserService {
         });
     }
 
-    public async update(id: string, { birthDate, password, ...rest }: UserUpdateDTO) {
+    public async update(id: string, { birthDate, password, ...rest }: UserUpdateDTO): Promise<UserType> {
         await this.ensureUserExistsById(id);
 
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
@@ -57,7 +58,7 @@ export class UserService {
         });
     }
 
-    public async updatePartial(id: string, { birthDate, password, ...rest }: UserUpdatePartialDTO) {
+    public async updatePartial(id: string, { birthDate, password, ...rest }: UserUpdatePartialDTO): Promise<UserType> {
         await this.ensureUserExistsById(id);
 
         const handledPassword = password && (await bcrypt.hash(password, bcrypt.genSaltSync()));
@@ -72,7 +73,7 @@ export class UserService {
         });
     }
 
-    public async delete(id: string) {
+    public async delete(id: string): Promise<UserType> {
         await this.ensureUserExistsById(id);
 
         return this.prisma.user.delete({

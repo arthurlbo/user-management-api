@@ -15,6 +15,8 @@ import { AuthResetPasswordDTO } from "./dto/auth-reset-password.dto";
 import { AuthUpdatePartialDTO } from "./dto/auth-update-partial.dto";
 import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
 
+type Token = { token: string };
+
 interface GenerateJWTConfig {
     expiresIn?: string;
     issuer?: string;
@@ -35,7 +37,7 @@ export class AuthService {
         private readonly mailerService: MailerService,
     ) {}
 
-    private async generateToken(id: UserType["id"], config: GenerateJWTConfig = {}) {
+    private async generateToken(id: UserType["id"], config: GenerateJWTConfig = {}): Promise<Token> {
         const defaultConfig: GenerateJWTConfig = { expiresIn: "30 days", issuer: this.issuer, audience: this.audience };
 
         const { expiresIn, issuer, audience } = { ...defaultConfig, ...config };
@@ -72,7 +74,7 @@ export class AuthService {
         }
     }
 
-    private async itIsUsersId(requestId: string, userId: string) {
+    private async itIsUsersId(requestId: string, userId: string): Promise<void> {
         if (requestId !== userId) {
             throw new UnauthorizedException(
                 "You are trying to update a user that is not yourself. Please, make sure you are updating your own user.",
@@ -80,13 +82,13 @@ export class AuthService {
         }
     }
 
-    public async register(data: AuthRegisterDTO) {
+    public async register(data: AuthRegisterDTO): Promise<Token> {
         const newUser = await this.userService.create(data);
 
         return this.generateToken(newUser.id);
     }
 
-    public async login({ email, password }: AuthLoginDTO) {
+    public async login({ email, password }: AuthLoginDTO): Promise<Token> {
         const user = await this.prismaService.user.findFirst({
             where: {
                 email,
@@ -100,19 +102,19 @@ export class AuthService {
         return this.generateToken(user.id);
     }
 
-    public async update(id: string, data: AuthUpdateDTO, user: UserType) {
+    public async update(id: string, data: AuthUpdateDTO, user: UserType): Promise<UserType> {
         await this.itIsUsersId(id, user.id);
 
         return this.userService.update(id, data);
     }
 
-    public async updatePartial(id: string, data: AuthUpdatePartialDTO, user: UserType) {
+    public async updatePartial(id: string, data: AuthUpdatePartialDTO, user: UserType): Promise<UserType> {
         await this.itIsUsersId(id, user.id);
 
         return this.userService.updatePartial(id, data);
     }
 
-    public async forgotPassword({ email }: AuthForgotPasswordDTO) {
+    public async forgotPassword({ email }: AuthForgotPasswordDTO): Promise<{ success: boolean }> {
         const user = await this.prismaService.user.findFirst({
             where: {
                 email,
@@ -141,7 +143,7 @@ export class AuthService {
         return { success: true };
     }
 
-    public async resetPassword({ password, token }: AuthResetPasswordDTO) {
+    public async resetPassword({ password, token }: AuthResetPasswordDTO): Promise<Token> {
         try {
             const { id } = await this.verifyToken(token, { issuer: "Forgot Password" });
 

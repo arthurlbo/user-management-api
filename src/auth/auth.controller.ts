@@ -40,6 +40,8 @@ import { AuthForgotPasswordDTO } from "./dto/auth-forgot-password.dto";
 const MAX_FILE_SIZE = 5_242_880; // 5MB
 const FILE_TYPE = /image\/(jpeg|jpg|png|webp|svg)$/;
 
+type Token = { token: string };
+
 @Controller("auth")
 export class AuthController {
     constructor(
@@ -49,18 +51,18 @@ export class AuthController {
 
     @Post("register")
     @UseInterceptors(EmailInterceptor)
-    async register(@Body() data: AuthRegisterDTO) {
+    async register(@Body() data: AuthRegisterDTO): Promise<Token> {
         return this.authService.register(data);
     }
 
     @Post("login")
-    async login(@Body() data: AuthLoginDTO) {
+    async login(@Body() data: AuthLoginDTO): Promise<Token> {
         return this.authService.login(data);
     }
 
     @UseGuards(AuthGuard)
     @Get("me")
-    async me(@User() user: UserType) {
+    async me(@User() user: UserType): Promise<Omit<UserType, "password">> {
         delete user["password"];
 
         return user;
@@ -81,7 +83,7 @@ export class AuthController {
             }),
         )
         avatar: Express.Multer.File,
-    ) {
+    ): Promise<{ fileUrl: string }> {
         const extension = extname(avatar.originalname);
         const fileName = user.id.concat(extension);
 
@@ -93,7 +95,11 @@ export class AuthController {
     @Put(":id")
     @UseGuards(AuthGuard)
     @UseInterceptors(EmailInterceptor)
-    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: AuthUpdateDTO, @User() user: UserType) {
+    async update(
+        @Param("id", ParseUUIDPipe) id: string,
+        @Body() data: AuthUpdateDTO,
+        @User() user: UserType,
+    ): Promise<UserType> {
         return this.authService.update(id, data, user);
     }
 
@@ -104,17 +110,17 @@ export class AuthController {
         @Param("id", ParseUUIDPipe) id: string,
         @Body() data: AuthUpdatePartialDTO,
         @User() user: UserType,
-    ) {
+    ): Promise<UserType> {
         return this.authService.updatePartial(id, data, user);
     }
 
     @Post("forgot-password")
-    async forgotPassword(@Body() data: AuthForgotPasswordDTO) {
+    async forgotPassword(@Body() data: AuthForgotPasswordDTO): Promise<{ success: boolean }> {
         return this.authService.forgotPassword(data);
     }
 
     @Post("reset-password")
-    async resetPassword(@Body() data: AuthResetPasswordDTO) {
+    async resetPassword(@Body() data: AuthResetPasswordDTO): Promise<Token> {
         return this.authService.resetPassword(data);
     }
 }

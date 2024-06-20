@@ -12,6 +12,8 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 
+import { User as UserType } from "@prisma/client";
+
 import { Role } from "@/enums/role.enum";
 import { AuthGuard } from "@/guards/auth.guard";
 import { RoleGuard } from "@/guards/role.guard";
@@ -32,34 +34,34 @@ export class UserController {
 
     @Post()
     @UseInterceptors(EmailInterceptor)
-    async create(@Body() data: UserCreateDTO) {
+    async create(@Body() data: UserCreateDTO): Promise<UserType> {
         return this.userService.create(data);
     }
 
     @Get()
-    async findAll() {
+    async findAll(): Promise<UserType[]> {
         return this.userService.findAll();
     }
 
     @Get(":id")
-    async findOne(@Param("id", ParseUUIDPipe) id: string) {
+    async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<UserType> {
         return this.userService.findOne(id);
     }
 
     @Put(":id")
     @UseInterceptors(EmailInterceptor)
-    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UserUpdateDTO) {
+    async update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UserUpdateDTO): Promise<UserType> {
         return this.userService.update(id, data);
     }
 
     @Patch(":id")
     @UseInterceptors(EmailInterceptor)
-    async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: UserUpdatePartialDTO) {
+    async updatePartial(@Param("id", ParseUUIDPipe) id: string, @Body() data: UserUpdatePartialDTO): Promise<UserType> {
         return this.userService.updatePartial(id, data);
     }
 
     @Delete(":id")
-    async delete(@Param("id", ParseUUIDPipe) id: string) {
+    async delete(@Param("id", ParseUUIDPipe) id: string): Promise<UserType> {
         return this.userService.delete(id);
     }
 }
