@@ -8,19 +8,21 @@ import { PrismaService } from "@/prisma/prisma.service";
 export class EmailInterceptor implements NestInterceptor {
     constructor(private readonly prisma: PrismaService) {}
 
-    async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
+    public async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
         const request = context.switchToHttp().getRequest();
 
-        const { user } = request;
-        const { email } = request.body;
+        const { body, route, user } = request;
+
+        const { email } = body;
 
         if (!email) return next.handle();
 
         const emailExists = (await this.prisma.user.count({ where: { email } })) > 0;
 
         const isUserEmail = user?.email === email;
+        const isAuthRoute = route.path.includes("auth");
 
-        if (emailExists && !isUserEmail) {
+        if (emailExists && (!isUserEmail || !isAuthRoute)) {
             throw new ConflictException(`${email} already have been taken.`);
         }
 
