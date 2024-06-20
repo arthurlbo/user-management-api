@@ -5,6 +5,27 @@ export const envSchema = z.object({
         description: "Environment that the app is running in",
         required_error: "😱 You forgot to add the environment",
     }),
+    POSTGRES_HOST: z.string({ description: "Postgres host", required_error: "😱 You forgot to add a Postgres host" }),
+    POSTGRES_PORT: z.string({ description: "Postgres port", required_error: "😱 You forgot to add a Postgres port" }),
+    POSTGRES_USER: z.string({ description: "Postgres user", required_error: "😱 You forgot to add a Postgres user" }),
+    POSTGRES_PASSWORD: z.string({
+        description: "Postgres password",
+        required_error: "😱 You forgot to add a Postgres password",
+    }),
+    POSTGRES_DB: z.string({
+        description: "Postgres database",
+        required_error: "😱 You forgot to add a Postgres database",
+    }),
+    PGADMIN_DEFAULT_EMAIL: z
+        .string({
+            description: "Default email for pgAdmin",
+            required_error: "😱 You forgot to add an email",
+        })
+        .email(),
+    PGADMIN_DEFAULT_PASSWORD: z.string({
+        description: "Default password for pgAdmin",
+        required_error: "😱 You forgot to add a password",
+    }),
     DATABASE_URL: z
         .string({
             description: "Database connection string",
