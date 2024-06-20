@@ -32,6 +32,12 @@ describe("UserController", () => {
         app.close();
     });
 
+    afterAll(async () => {
+        const prismaService = new PrismaService();
+
+        await prismaService.user.deleteMany();
+    });
+
     it("should register a new user", async () => {
         const response = await request(app.getHttpServer()).post("/auth/register").send(authRegisterMock);
 

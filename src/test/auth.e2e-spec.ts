@@ -5,8 +5,9 @@ import { Test, TestingModule } from "@nestjs/testing";
 import * as request from "supertest";
 import { User } from "@prisma/client";
 
-import { AppModule } from "@/app.module";
 import { Role } from "@/enums/role.enum";
+import { AppModule } from "@/app.module";
+import { PrismaService } from "@/prisma/prisma.service";
 
 import { updateUserMock } from "./__mocks__/update-user.mock";
 import { authRegisterMock } from "./__mocks__/auth-register.mock";
@@ -28,6 +29,12 @@ describe("AuthController", () => {
 
     afterEach(() => {
         app.close();
+    });
+
+    afterAll(async () => {
+        const prismaService = new PrismaService();
+
+        await prismaService.user.deleteMany();
     });
 
     it("should register a new user", async () => {
