@@ -11,7 +11,7 @@
         "format": "prettier --write \"src/**/*.ts\"",
         "dev": "pnpm dev-env -- nest start --watch",
         "debug": "nest start --debug --watch",
-        "prod": "pnpm dev-prod -- node dist/src/main",
+        "prod": "pnpm prod-env -- node dist/src/main",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "test": "jest",
         "test:watch": "jest --watch",
