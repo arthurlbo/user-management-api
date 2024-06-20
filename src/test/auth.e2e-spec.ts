@@ -1,3 +1,4 @@
+import { unlinkSync } from "node:fs";
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 
@@ -8,7 +9,6 @@ import { AppModule } from "@/app.module";
 
 import { updateUserMock } from "./__mocks__/update-user.mock";
 import { authRegisterMock } from "./__mocks__/auth-register.mock";
-import { unlinkSync } from "node:fs";
 
 describe("AuthController", () => {
     let app: INestApplication;
