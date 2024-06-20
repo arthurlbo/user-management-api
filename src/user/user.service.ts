@@ -19,13 +19,13 @@ export class UserService {
         }
     }
 
-    public async create({ birthDate, password, ...rest }: UserCreateDTO): Promise<UserType> {
+    public async create({ birthdate, password, ...rest }: UserCreateDTO): Promise<UserType> {
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
         return this.prisma.user.create({
             data: {
                 ...rest,
-                birthDate: birthDate ? new Date(birthDate) : null,
+                birthdate: birthdate ? new Date(birthdate) : null,
                 password: hashedPassword,
             },
         });
@@ -43,7 +43,7 @@ export class UserService {
         });
     }
 
-    public async update(id: string, { birthDate, password, ...rest }: UserUpdateDTO): Promise<UserType> {
+    public async update(id: string, { birthdate, password, ...rest }: UserUpdateDTO): Promise<UserType> {
         await this.ensureUserExistsById(id);
 
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
@@ -52,13 +52,13 @@ export class UserService {
             where: { id },
             data: {
                 ...rest,
-                birthDate: birthDate ? new Date(birthDate) : null,
+                birthdate: birthdate ? new Date(birthdate) : null,
                 password: hashedPassword,
             },
         });
     }
 
-    public async updatePartial(id: string, { birthDate, password, ...rest }: UserUpdatePartialDTO): Promise<UserType> {
+    public async updatePartial(id: string, { birthdate, password, ...rest }: UserUpdatePartialDTO): Promise<UserType> {
         await this.ensureUserExistsById(id);
 
         const handledPassword = password && (await bcrypt.hash(password, bcrypt.genSaltSync()));
@@ -67,7 +67,7 @@ export class UserService {
             where: { id },
             data: {
                 ...rest,
-                birthDate: birthDate && new Date(birthDate),
+                birthdate: birthdate && new Date(birthdate),
                 password: handledPassword,
             },
         });

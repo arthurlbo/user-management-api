@@ -14,7 +14,7 @@ model User {
   password  String    @db.VarChar(127)
   createdAt DateTime? @default(now()) @db.Timestamp(0) @map(name: "created_at")
   updatedAt DateTime? @default(now()) @db.Timestamp(0) @map(name: "updated_at")
-  birthDate DateTime? @db.Date
+  birthdate DateTime? @db.Date
  
   role      Role      @relation(fields: [roleId], references: [id])
   roleId    Int       @default(2) @map(name: "role_id")
