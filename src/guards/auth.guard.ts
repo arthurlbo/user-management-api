@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate {
         private readonly userService: UserService,
     ) {}
 
-    async canActivate(context: ExecutionContext) {
+    public async canActivate(context: ExecutionContext) {
         const request = context.switchToHttp().getRequest();
 
         const { authorization } = request.headers;

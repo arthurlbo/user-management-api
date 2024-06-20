@@ -12,13 +12,13 @@ import { UserUpdatePartialDTO } from "./dto/user-update-partial.dto";
 export class UserService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async ensureUserExists(id: string) {
+    private async ensureUserExistsById(id: string) {
         if (!(await this.prisma.user.count({ where: { id } }))) {
             throw new NotFoundException(`User with id: ${id} does not exist.`);
         }
     }
 
-    async create({ birthDate, password, ...rest }: UserCreateDTO) {
+    public async create({ birthDate, password, ...rest }: UserCreateDTO) {
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
         return this.prisma.user.create({
@@ -30,20 +30,20 @@ export class UserService {
         });
     }
 
-    async findAll() {
+    public async findAll() {
         return this.prisma.user.findMany();
     }
 
-    async findOne(id: string) {
-        await this.ensureUserExists(id);
+    public async findOne(id: string) {
+        await this.ensureUserExistsById(id);
 
         return this.prisma.user.findUnique({
             where: { id },
         });
     }
 
-    async update(id: string, { birthDate, password, ...rest }: UserUpdateDTO) {
-        await this.ensureUserExists(id);
+    public async update(id: string, { birthDate, password, ...rest }: UserUpdateDTO) {
+        await this.ensureUserExistsById(id);
 
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
@@ -57,8 +57,8 @@ export class UserService {
         });
     }
 
-    async updatePartial(id: string, { birthDate, password, ...rest }: UserUpdatePartialDTO) {
-        await this.ensureUserExists(id);
+    public async updatePartial(id: string, { birthDate, password, ...rest }: UserUpdatePartialDTO) {
+        await this.ensureUserExistsById(id);
 
         const handledPassword = password && (await bcrypt.hash(password, bcrypt.genSaltSync()));
 
@@ -72,8 +72,8 @@ export class UserService {
         });
     }
 
-    async delete(id: string) {
-        await this.ensureUserExists(id);
+    public async delete(id: string) {
+        await this.ensureUserExistsById(id);
 
         return this.prisma.user.delete({
             where: { id },

@@ -16,7 +16,7 @@ export class FileService {
         return { fileUrl };
     }
 
-    async upload(
+    public async upload(
         req: Request,
         file: Express.Multer.File,
         path: string,
