@@ -41,7 +41,6 @@ export default [
 
             parserOptions: {
                 project: "tsconfig.json",
-                tsconfigRootDir: "C:\\projects\\user-management-api",
             },
         },
 
