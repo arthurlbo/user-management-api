@@ -29,7 +29,14 @@ describe("EnvService", () => {
                 MAIL_HOST: "smtp.mailtrap.io",
                 MAIL_PORT: "2525",
                 MAIL_USER: "user",
-                MAIL_PASS: "pass",
+                MAIL_PASS: "password",
+                POSTGRES_HOST: "postgres",
+                POSTGRES_PORT: "5432",
+                POSTGRES_USER: "user",
+                POSTGRES_PASSWORD: "password",
+                POSTGRES_DB: "db",
+                PGADMIN_DEFAULT_EMAIL: "email@email.com",
+                PGADMIN_DEFAULT_PASSWORD: "password",
             };
             expect(() => envSchema.parse(validEnv)).not.toThrow();
         });

@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const envSchema = z.object({
+export const schema = z.object({
     NODE_ENV: z.enum(["development", "production", "test"], {
         description: "Environment that the app is running in",
         required_error: "😱 You forgot to add the environment",
@@ -19,13 +19,14 @@ export const envSchema = z.object({
     PGADMIN_DEFAULT_EMAIL: z
         .string({
             description: "Default email for pgAdmin",
-            required_error: "😱 You forgot to add an email",
         })
-        .email(),
-    PGADMIN_DEFAULT_PASSWORD: z.string({
-        description: "Default password for pgAdmin",
-        required_error: "😱 You forgot to add a password",
-    }),
+        .email()
+        .optional(),
+    PGADMIN_DEFAULT_PASSWORD: z
+        .string({
+            description: "Default password for pgAdmin",
+        })
+        .optional(),
     DATABASE_URL: z
         .string({
             description: "Database connection string",
@@ -47,6 +48,14 @@ export const envSchema = z.object({
         required_error: "😱 You forgot to add a password to the mail server",
     }),
 });
+
+export const envSchema = schema.refine(
+    (value) => value.NODE_ENV === "production" || (!!value.PGADMIN_DEFAULT_PASSWORD && !!value.PGADMIN_DEFAULT_EMAIL),
+    {
+        message: "PGADMIN_DEFAULT_PASSWORD and PGADMIN_DEFAULT_EMAIL are required in test and development",
+        path: ["PGADMIN_DEFAULT_PASSWORD", "PGADMIN_DEFAULT_EMAIL"],
+    },
+);
 
 type Env = z.infer<typeof envSchema>;
 
