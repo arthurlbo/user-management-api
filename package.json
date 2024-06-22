@@ -6,7 +6,6 @@
     "private": true,
     "license": "UNLICENSED",
     "scripts": {
-        "prebuild": "pnpm format && pnpm eslint && pnpm test && pnpm test:e2e",
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\"",
         "dev": "pnpm dev-env -- nest start --watch",
