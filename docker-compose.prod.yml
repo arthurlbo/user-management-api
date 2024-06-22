@@ -1,9 +1,33 @@
 services:
-  prod:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: user-management
-    restart: always
-    ports:
-      - "3000:3000"
+    postgres:
+        image: bitnami/postgresql:latest
+        container_name: postgres
+        restart: always
+        env_file:
+            - .env.production
+        ports:
+            - "5432:5432"
+        volumes:
+            - user-management-api_db_vol:/bitnami/postgresql
+        networks:
+            - first-network
+
+    prod:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: user-management
+        restart: always
+        ports:
+            - "3000:3000"
+        depends_on:
+            - postgres
+        networks:
+            - first-network
+
+networks:
+    first-network:
+        driver: bridge
+
+volumes:
+    user-management-api_db_vol: {}
