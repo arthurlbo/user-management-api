@@ -4,7 +4,7 @@
 >
 > The primary goal of this project was to enhance backend development skills by implementing a comprehensive user management system. This includes sophisticated authentication mechanisms and administrative capabilities to manage users effectively. The combination of NestJS, Docker, Prisma and PostgreSQL ensures a modern, scalable, and maintainable solution.
 >
-> Also there is a branch using TypeORM instead of Prisma, just for learning purposes. you can check it out [here](https://github.com/arthurlbo/user-management-api/tree/type-orm).
+> Also there is a branch using TypeORM and MySQL instead Prisma and PostgreSQL, just for learning purposes. you can check it out [here](https://github.com/arthurlbo/user-management-api/tree/type-orm).
 
 ## Tech Stack
 
