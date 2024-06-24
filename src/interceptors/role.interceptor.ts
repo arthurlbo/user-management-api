@@ -2,7 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor, Unauthorize
 
 import { Observable } from "rxjs";
 
-import { Role } from "@/enums/role.enum";
+import { Role } from "@/common/enums/role.enum";
 
 @Injectable()
 export class RoleInterceptor implements NestInterceptor {

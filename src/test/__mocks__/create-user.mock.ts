@@ -1,4 +1,4 @@
-import { Role } from "@/enums/role.enum";
+import { Role } from "@/common/enums/role.enum";
 
 import { UserCreateDTO } from "@/user/dto/user-create.dto";
 

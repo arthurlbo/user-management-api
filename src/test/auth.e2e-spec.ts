@@ -5,7 +5,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import * as request from "supertest";
 import { User } from "@prisma/client";
 
-import { Role } from "@/enums/role.enum";
+import { Role } from "@/common/enums/role.enum";
 import { AppModule } from "@/app.module";
 import { PrismaService } from "@/prisma/prisma.service";
 

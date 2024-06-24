@@ -5,9 +5,9 @@ import { PrismaClient } from "@prisma/client";
 let Role;
 
 if (process.env.NODE_ENV === "production") {
-    Role = require("../dist/src/enums/role.enum").Role;
+    Role = require("../dist/src/common/enums/role.enum").Role;
 } else {
-    Role = require("../src/enums/role.enum").Role;
+    Role = require("../src/common/enums/role.enum").Role;
 }
 
 const prisma = new PrismaClient();
