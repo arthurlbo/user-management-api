@@ -7,6 +7,7 @@ import {
     Body,
     Controller,
     FileTypeValidator,
+    Get,
     MaxFileSizeValidator,
     Param,
     ParseFilePipe,
@@ -57,11 +58,11 @@ export class AuthController {
     }
 
     @UseGuards(AuthGuard)
-    @Post("me")
+    @Get("me")
     async me(@User() user: UserEntity) {
         delete user["password"];
 
-        return { data: user };
+        return user;
     }
 
     @UseInterceptors(FileInterceptor("file"))

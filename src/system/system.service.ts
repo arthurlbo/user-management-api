@@ -5,7 +5,7 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class SystemService {
-    deleteExistingFile(path: string, acceptableFileExtensions: string[]): void {
+    public deleteExistingFile(path: string, acceptableFileExtensions: string[]): void {
         const fileNameWithoutExtension = path.split(".")[0];
 
         acceptableFileExtensions.some((extension) => {
@@ -18,10 +18,11 @@ export class SystemService {
         });
     }
 
-    createFile(path: string, file: Express.Multer.File): Promise<void> {
+    public createFile(path: string, file: Express.Multer.File): Promise<void> {
         return new Promise((resolve, reject) => {
             const readStream = new PassThrough();
-            readStream.end(file.buffer);
+            readStream.write(file.buffer);
+            readStream.end();
 
             const writeStream = createWriteStream(path);
 

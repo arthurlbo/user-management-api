@@ -15,13 +15,13 @@ export class UserService {
         private readonly usersRepository: Repository<UserEntity>,
     ) {}
 
-    async ensureUserExistsById(id: string) {
+    private async ensureUserExistsById(id: string) {
         if (!(await this.usersRepository.exists({ where: { id } }))) {
             throw new NotFoundException(`User with id: ${id} does not exist.`);
         }
     }
 
-    async create({ birthDate, password, ...rest }: CreateUserDTO) {
+    public async create({ birthDate, password, ...rest }: CreateUserDTO) {
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
         const user = this.usersRepository.create({
@@ -33,17 +33,17 @@ export class UserService {
         return this.usersRepository.save(user);
     }
 
-    async findAll() {
+    public async findAll() {
         return this.usersRepository.find();
     }
 
-    async findOne(id: string) {
+    public async findOne(id: string) {
         await this.ensureUserExistsById(id);
 
         return this.usersRepository.findOneBy({ id });
     }
 
-    async update(id: string, { birthDate, password, ...rest }: UpdateUserDTO) {
+    public async update(id: string, { birthDate, password, ...rest }: UpdateUserDTO) {
         await this.ensureUserExistsById(id);
 
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
@@ -57,7 +57,7 @@ export class UserService {
         return this.findOne(id);
     }
 
-    async updatePartial(id: string, { birthDate, password, ...rest }: UpdatePartialUserDTO) {
+    public async updatePartial(id: string, { birthDate, password, ...rest }: UpdatePartialUserDTO) {
         await this.ensureUserExistsById(id);
 
         const handledPassword = password && (await bcrypt.hash(password, bcrypt.genSaltSync()));
@@ -71,11 +71,11 @@ export class UserService {
         return this.findOne(id);
     }
 
-    async delete(id: string) {
+    public async delete(id: string) {
         await this.ensureUserExistsById(id);
 
         await this.usersRepository.delete(id);
 
-        return true;
+        return { success: true };
     }
 }

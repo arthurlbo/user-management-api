@@ -15,16 +15,18 @@ export class EmailInterceptor implements NestInterceptor {
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
         const request = context.switchToHttp().getRequest();
 
-        const { user } = request;
-        const { email } = request.body;
+        const { body, route, user } = request;
+
+        const { email } = body;
 
         if (!email) return next.handle();
 
         const emailExists = await this.usersRepository.exists({ where: { email } });
 
         const isUserEmail = user?.email === email;
+        const isAuthRoute = route.path.includes("auth");
 
-        if (emailExists && !isUserEmail) {
+        if (emailExists && (!isUserEmail || !isAuthRoute)) {
             throw new ConflictException(`${email} already have been taken.`);
         }
 

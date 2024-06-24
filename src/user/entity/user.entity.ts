@@ -7,7 +7,7 @@ import { Role } from "@/enums/role.enum";
 })
 export class UserEntity {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id?: string;
 
     @Column({
         length: 63,
@@ -29,7 +29,7 @@ export class UserEntity {
         type: "date",
         nullable: true,
     })
-    birthDate: Date;
+    birthDate?: Date;
 
     @Column({
         default: Role.User,
@@ -37,8 +37,8 @@ export class UserEntity {
     role: Role;
 
     @CreateDateColumn()
-    createdAt: string;
+    createdAt?: string;
 
     @UpdateDateColumn()
-    updatedAt: string;
+    updatedAt?: string;
 }

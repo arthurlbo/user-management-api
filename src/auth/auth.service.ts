@@ -56,7 +56,7 @@ export class AuthService {
         return { token };
     }
 
-    async verifyToken(token: string, config: VerifyJWTConfig = {}): Promise<{ id: UserEntity["id"] }> {
+    public async verifyToken(token: string, config: VerifyJWTConfig = {}): Promise<{ id: UserEntity["id"] }> {
         const defaultConfig: VerifyJWTConfig = { issuer: this.issuer, audience: this.audience };
 
         const { issuer, audience } = { ...defaultConfig, ...config };
@@ -81,13 +81,13 @@ export class AuthService {
         }
     }
 
-    async register(data: RegisterAuthDTO) {
+    public async register(data: RegisterAuthDTO) {
         const newUser = await this.userService.create(data);
 
         return this.generateToken(newUser.id);
     }
 
-    async login({ email, password }: LoginAuthDTO) {
+    public async login({ email, password }: LoginAuthDTO) {
         const user = await this.usersRepository.findOneBy({
             email,
         });
@@ -99,19 +99,19 @@ export class AuthService {
         return this.generateToken(user.id);
     }
 
-    async update(id: string, { birthDate, password, ...rest }: UpdateAuthDTO, user: UserEntity) {
+    public async update(id: string, { birthDate, password, ...rest }: UpdateAuthDTO, user: UserEntity) {
         await this.itIsUsersId(id, user.id);
 
         return this.userService.update(id, { ...rest, birthDate, password });
     }
 
-    async updatePartial(id: string, { birthDate, password, ...rest }: UpdatePartialAuthDTO, user: UserEntity) {
+    public async updatePartial(id: string, { birthDate, password, ...rest }: UpdatePartialAuthDTO, user: UserEntity) {
         await this.itIsUsersId(id, user.id);
 
         return this.userService.updatePartial(id, { ...rest, birthDate, password });
     }
 
-    async forgotPassword({ email }: ForgotPasswordAuthDTO) {
+    public async forgotPassword({ email }: ForgotPasswordAuthDTO) {
         const user = await this.usersRepository.findOneBy({
             email,
         });
@@ -135,10 +135,10 @@ export class AuthService {
             },
         });
 
-        return true;
+        return { success: true };
     }
 
-    async resetPassword({ password, token }: ResetPasswordAuthDTO) {
+    public async resetPassword({ password, token }: ResetPasswordAuthDTO) {
         try {
             const { id } = await this.verifyToken(token, { issuer: "Forgot Password" });
 

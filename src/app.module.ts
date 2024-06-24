@@ -19,7 +19,10 @@ import { AppController } from "./app.controller";
     imports: [
         AuthModule,
         UserModule,
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
+        }),
         ThrottlerModule.forRoot([
             {
                 ttl: 60 * 1000,
