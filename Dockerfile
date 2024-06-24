@@ -45,5 +45,5 @@ COPY --from=build /usr/src/app/node_modules ./node_modules
 # Copy .env.production file from the build stage
 COPY --from=build /usr/src/app/.env.production ./.env.production
 
-CMD ["sh", "-c", "pnpm p-gen; pnpm prod-p-mg; pnpm prod-p-seed; pnpm prod:start"]
+CMD ["sh", "-c", "pnpm p-gen; pnpm p-mg:prod; pnpm p-seed:prod; pnpm prod:start"]
 
