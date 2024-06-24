@@ -1,73 +1,167 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+### Hi there! 👋
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> The User Management API is designed to provide robust user authentication and management functionalities. This API enables users to perform essential operations such as registration, login, password recovery, etc. Additionally, it includes an admin-only CRUD for managing user accounts.
+>
+> The primary goal of this project was to enhance backend development skills by implementing a comprehensive user management system. This includes sophisticated authentication mechanisms and administrative capabilities to manage users effectively. The combination of NestJS, Docker, Prisma and PostgreSQL ensures a modern, scalable, and maintainable solution.
+>
+> Also there is a branch using TypeORM instead of Prisma, just for learning purposes. you can check it out [here](https://github.com/arthurlbo/user-management-api/tree/type-orm).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tech Stack
 
-## Description
+- [NestJS](https://nestjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Jwt](https://github.com/nestjs/jwt)
+- [Bcrypt](https://www.npmjs.com/package/bcrypt)
+- [Class-validator](https://www.npmjs.com/package/class-validator)
+- [Class-transformer](https://www.npmjs.com/package/class-transformer)
+- [Zod](https://www.npmjs.com/package/zod)
+- [Nodemailer](https://www.npmjs.com/package/@nestjs-modules/mailer)
+- [Pug](https://pugjs.org/api/getting-started.html)
+- [Jest](https://jestjs.io/)
+- [Supertest](https://www.npmjs.com/package/supertest)
+- [Dotenv-cli](https://www.npmjs.com/package/dotenv-cli)
+- [Prisma](https://www.prisma.io/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Docker](https://www.docker.com/)
+- [Eslint](https://eslint.org)
+- [Prettier](https://prettier.io)
+- [Husky](https://github.com/typicode/husky)
+- [Commitlint](https://commitlint.js.org/#/)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Key Features
 
-## Installation
+**User Authentication**
+
+- Registration
+- Login
+- Avatar Upload
+- Update Completely
+- Update Partially
+- Password Recovery
+
+**Admin CRUD**
+
+- Register User
+- Read All Users
+- Read User
+- Update User Completely
+- Update User Partially
+- Delete User
+
+## Getting Started
+
+> **Make sure you have [Docker](https://www.docker.com/) installed on your machine.**
 
 ```bash
-$ pnpm install
+# Run database container
+docker compose -f docker-compose.dev.yml up -d
+
+# Install dependencies
+pnpm install
+
+# Apply migration and generate prisma client
+pnpm p-mg
+
+# Start the development server
+pnpm dev
 ```
 
-## Running the app
+API will be running  on `http://localhost:3000`
+
+## Structure
+
+```folder
+├── .husky
+└── .vscode
+└── prisma
+└── src
+    ├── auth
+    ├── common
+    ├── decorators
+    ├── env
+    ├── file
+    ├── guards
+    ├── interceptors
+    ├── prisma
+    ├── system
+    ├── templates
+    ├── test
+    ├── user
+```
+
+| Folder             | Description                                        |
+| :------------------ | :-------------------------------------------------- |
+| **.husky**         | Git hooks managed by Husky.                        |
+| **.vscode**        | VSCode settings .                                  |
+| **prisma**         | Prisma config such as schema, migrations and seed. |
+| **auth**           | Auth related files to manage user authentication.  |
+| **common**         | Reusable utilities and constants.                  |
+| **decorators**     | Custom decorators.                                 |
+| **env**            | Env related files to manage environment variables. |
+| **file**           | File related files to manage file operations.      |
+| **guards**         | Custom guards.                                     |
+| **interceptors**   | Custom interceptors.                               |
+| **prisma**         | Prisma service to interact with the database.      |
+| **system**         | System related files to manage system operations.  |
+| **templates**      | Email templates.                                   |
+| **test**           | Test related files.                                |
+| **user**           | User related files to manage user operations.      |
+
+## Custom Commands
 
 ```bash
-# development
-$ pnpm run start
 
-# watch mode
-$ pnpm run start:dev
+# Run all tests
+pnpm test:all
 
-# production mode
-$ pnpm run start:prod
+# Run prisma generate
+pnpm p-gen
+
+# Run prisma migrate
+pnpm p-mg
+
+# Run prisma migrate reset
+pnpm p-mg-reset
+
+# Run prisma seed
+pnpm p-seed
+
+# Set environment to production
+pnpm env:prod
+
+# Set environment to development
+pnpm env:dev
+
+# Set environment to test
+pnpm env:test
+
+# Run prisma migrate in production environment
+pnpm p-mg:prod
+
+# Run prisma migrate in development environment
+pnpm p-mg:dev
+
+# Run prisma migrate in test environment
+pnpm p-mg:test
+
+# Run prisma migrate reset in development environment
+pnpm p-mg-reset:dev
+
+# Run prisma migrate reset in test environment
+pnpm p-mg-reset:test
+
+# Run prisma seed in production environment
+pnpm p-seed:prod
+
+# Run prisma seed in development environment
+pnpm p-seed:dev
+
+# Run prisma seed in test environment
+pnpm p-seed:test
+
+# Commit staged changes
+pnpm commit
+
 ```
 
-## Test
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+<p align="center">Made with 🤍 by Arthur</p>
